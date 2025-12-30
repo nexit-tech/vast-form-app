@@ -1,6 +1,6 @@
 "use client";
 
-import { useAccessForm } from "@/hooks";
+import { useContactForm } from "@/hooks/useContactForm";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { AnimatePresence, motion } from "framer-motion";
 import Input from "./components/Input/Input";
@@ -13,7 +13,7 @@ import styles from "./page.module.css";
 
 export default function AccessPage() {
   const { dict } = useLanguage();
-  
+
   const {
     formData,
     errors,
@@ -21,7 +21,7 @@ export default function AccessPage() {
     isSuccess,
     handleChange,
     handleSubmit,
-  } = useAccessForm(dict);
+  } = useContactForm(dict);
 
   if (isSuccess) {
     return (
