@@ -1,0 +1,33 @@
+.button {
+  width: 100%;
+  padding: 1.25rem;
+  background-color: #FFFFFF;
+  color: var(--color-accent);
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  border-radius: 100px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s var(--ease-smooth);
+  animation: scaleUp 0.5s var(--ease-elastic) 0.2s backwards;
+}
+
+.button:hover:not(:disabled) {
+  transform: scale(1.02);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.button:disabled {
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}

@@ -1,0 +1,231 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  margin-left: 1.5rem;
+  letter-spacing: 0.02em;
+}
+
+.trigger {
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  font-size: 1rem;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.trigger:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar {
+  width: 90%;
+  max-width: 340px;
+  background-color: #352EF2;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  padding: 1.5rem;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.headerTitles {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.navButton {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.navButton:hover {
+  background: white;
+  color: #352EF2;
+  transform: scale(1.1);
+}
+
+.titleBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
+  color: white;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.5rem 0.8rem;
+  border-radius: 12px;
+  transition: all 0.2s;
+  text-transform: capitalize;
+}
+
+.titleBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.titleBtnActive {
+  background: white;
+  color: #352EF2;
+}
+
+.weekGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 0.5rem;
+}
+
+.weekDay {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  font-weight: 600;
+}
+
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  border: none;
+  position: relative;
+}
+
+.day:hover:not(.dayEmpty):not(.daySelected) {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.daySelected {
+  background-color: #FFFFFF;
+  color: #352EF2;
+  font-weight: 800;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.dayToday::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  width: 4px;
+  height: 4px;
+  background-color: #4A41F5;
+  border-radius: 50%;
+  border: 1px solid white;
+}
+
+.dayEmpty { pointer-events: none; }
+
+.selectionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 4px; 
+}
+
+.selectionItem {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+}
+
+.selectionItem:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.selectionActive {
+  background: white;
+  color: #352EF2;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.errorMessage {
+  color: #ff8ca3;
+  font-size: 0.75rem;
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}

@@ -1,0 +1,77 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.5s var(--ease-smooth) backwards;
+  position: relative;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  margin-left: 1.5rem;
+  letter-spacing: 0.02em;
+}
+
+.input {
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  background-color: var(--color-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+  font-size: 1rem;
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  transition: all 0.3s var(--ease-smooth);
+  appearance: none;
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.input:focus {
+  outline: none;
+  background-color: var(--color-surface-hover);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.input[type="date"] {
+  display: block;
+  min-height: 58px;
+}
+
+.input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.errorInput {
+  border-color: #ff6b6b;
+  background-color: rgba(255, 107, 107, 0.1);
+}
+
+.errorMessage {
+  color: #ff6b6b;
+  font-size: 0.75rem;
+  margin-left: 1.5rem;
+  margin-top: 0.25rem;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
