@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import "./globals.css";
 
 const garetFont = localFont({
@@ -33,6 +34,9 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Vast Form App",
   description: "Aplicação de formulário da Vast Infra",
+  icons: {
+    icon: "/images/vastlogo.png",
+  },
 };
 
 export default function RootLayout({
@@ -43,7 +47,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${garetFont.variable} ${monumentFont.variable}`}>
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

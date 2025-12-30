@@ -1,5 +1,6 @@
-import { useState, ChangeEvent, FormEvent } from "react";
-import { AccessFormData, FormErrors } from "@/types";
+import { useState, FormEvent } from "react";
+import { AccessFormData, FormErrors, Translation } from "@/types";
+import { supabase } from "@/lib/supabase";
 
 const initialData: AccessFormData = {
   vessel: "",
@@ -17,7 +18,21 @@ const initialData: AccessFormData = {
   vehiclePlate: "",
 };
 
-export const useAccessForm = () => {
+const formatDateToDB = (dateString: string): string | null => {
+  if (!dateString) return null;
+  const [day, month, year] = dateString.split("/");
+  if (!day || !month || !year) return null;
+  return `${year}-${month}-${day}`;
+};
+
+interface FieldChangeEvent {
+  target: {
+    name: string;
+    value: string;
+  };
+}
+
+export const useAccessForm = (dict: Translation) => {
   const [formData, setFormData] = useState<AccessFormData>(initialData);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,21 +41,23 @@ export const useAccessForm = () => {
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
     let isValid = true;
+    const errorDict = dict.errors;
 
-    if (!formData.vessel.trim()) newErrors.vessel = "Embarcação obrigatória";
-    if (!formData.company.trim()) newErrors.company = "Empresa obrigatória";
-    if (!formData.fullName.trim()) newErrors.fullName = "Nome completo obrigatório";
-    if (!formData.documentId.trim()) newErrors.documentId = "CPF/Passaporte obrigatório";
-    if (!formData.rg.trim()) newErrors.rg = "RG obrigatório";
-    if (!formData.birthDate.trim()) newErrors.birthDate = "Data obrigatória";
-    if (!formData.role.trim()) newErrors.role = "Cargo obrigatório";
-    if (!formData.action) newErrors.action = "Selecione o tipo de ação";
-    if (!formData.hasVehicle) newErrors.hasVehicle = "Selecione se haverá acesso com veículo";
+    if (!formData.vessel.trim()) newErrors.vessel = errorDict.vessel;
+    if (!formData.company.trim()) newErrors.company = errorDict.company;
+    if (!formData.fullName.trim()) newErrors.fullName = errorDict.fullName;
+    if (!formData.documentId.trim()) newErrors.documentId = errorDict.documentId;
+    if (!formData.rg.trim()) newErrors.rg = errorDict.rg;
+    if (!formData.birthDate.trim()) newErrors.birthDate = errorDict.birthDate;
+    if (!formData.role.trim()) newErrors.role = errorDict.role;
+    if (!formData.action) newErrors.action = errorDict.action;
+    if (!formData.hasVehicle) newErrors.hasVehicle = errorDict.hasVehicle;
+    
     if (formData.hasVehicle === "Sim") {
-      if (!formData.cnhNumber.trim()) newErrors.cnhNumber = "CNH obrigatória";
-      if (!formData.cnhValidity.trim()) newErrors.cnhValidity = "Validade da CNH obrigatória";
-      if (!formData.vehicleModel.trim()) newErrors.vehicleModel = "Modelo do veículo obrigatório";
-      if (!formData.vehiclePlate.trim()) newErrors.vehiclePlate = "Placa obrigatória";
+      if (!formData.cnhNumber.trim()) newErrors.cnhNumber = errorDict.cnhNumber;
+      if (!formData.cnhValidity.trim()) newErrors.cnhValidity = errorDict.cnhValidity;
+      if (!formData.vehicleModel.trim()) newErrors.vehicleModel = errorDict.vehicleModel;
+      if (!formData.vehiclePlate.trim()) newErrors.vehiclePlate = errorDict.vehiclePlate;
     }
 
     setErrors(newErrors);
@@ -48,9 +65,7 @@ export const useAccessForm = () => {
     return isValid;
   };
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: FieldChangeEvent) => {
     const { name, value } = e.target;
     
     setFormData((prev) => {
@@ -78,13 +93,32 @@ export const useAccessForm = () => {
 
     if (validate()) {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        console.log("Dados enviados:", formData);
+        const { error } = await supabase.from("access_requests").insert([
+          {
+            vessel: formData.vessel,
+            company: formData.company,
+            full_name: formData.fullName,
+            document_id: formData.documentId,
+            rg: formData.rg,
+            birth_date: formatDateToDB(formData.birthDate),
+            role: formData.role,
+            action: formData.action,
+            has_vehicle: formData.hasVehicle,
+            cnh_number: formData.hasVehicle === "Sim" ? formData.cnhNumber : null,
+            cnh_validity: formData.hasVehicle === "Sim" ? formatDateToDB(formData.cnhValidity) : null,
+            vehicle_model: formData.hasVehicle === "Sim" ? formData.vehicleModel : null,
+            vehicle_plate: formData.hasVehicle === "Sim" ? formData.vehiclePlate : null,
+          },
+        ]);
+
+        if (error) throw error;
+
         setFormData(initialData);
         setIsSuccess(true);
         window.scrollTo(0, 0);
       } catch (error) {
-        console.error(error);
+        console.error("Error submitting form:", error);
+        alert("Erro ao enviar. Tente novamente.");
       }
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });

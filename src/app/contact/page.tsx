@@ -1,6 +1,7 @@
 "use client";
 
 import { useAccessForm } from "@/hooks";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { AnimatePresence, motion } from "framer-motion";
 import Input from "./components/Input/Input";
 import Select from "./components/Select/Select";
@@ -11,6 +12,8 @@ import SuccessView from "./components/SuccessView/SuccessView";
 import styles from "./page.module.css";
 
 export default function AccessPage() {
+  const { dict } = useLanguage();
+  
   const {
     formData,
     errors,
@@ -18,7 +21,7 @@ export default function AccessPage() {
     isSuccess,
     handleChange,
     handleSubmit,
-  } = useAccessForm();
+  } = useAccessForm(dict);
 
   if (isSuccess) {
     return (
@@ -38,34 +41,34 @@ export default function AccessPage() {
       </nav>
 
       <header className={styles.header}>
-        <h1 className={styles.title}>ACESSO</h1>
-        <p className={styles.subtitle}>Preencha os dados do visitante ou tripulante.</p>
+        <h1 className={styles.title}>{dict.form.title}</h1>
+        <p className={styles.subtitle}>{dict.form.subtitle}</p>
       </header>
       
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
         <section className={styles.section}>
           <Input
-            label="Embarcação"
+            label={dict.form.vessel}
             name="vessel"
-            placeholder="Nome da embarcação"
+            placeholder={dict.form.vessel}
             value={formData.vessel}
             onChange={handleChange}
             error={errors.vessel}
           />
 
           <Input
-            label="Empresa"
+            label={dict.form.company}
             name="company"
-            placeholder="Empresa do visitante"
+            placeholder={dict.form.company}
             value={formData.company}
             onChange={handleChange}
             error={errors.company}
           />
 
           <Input
-            label="Nome Completo"
+            label={dict.form.fullName}
             name="fullName"
-            placeholder="Conforme documento"
+            placeholder={dict.form.fullName}
             value={formData.fullName}
             onChange={handleChange}
             error={errors.fullName}
@@ -73,17 +76,17 @@ export default function AccessPage() {
 
           <div className={styles.row}>
             <Input
-              label="CPF ou Passaporte"
+              label={dict.form.documentId}
               name="documentId"
-              placeholder="000.000.000-00"
+              placeholder={dict.form.documentIdPlaceholder}
               value={formData.documentId}
               onChange={handleChange}
               error={errors.documentId}
             />
             <Input
-              label="RG"
+              label={dict.form.rg}
               name="rg"
-              placeholder="Número RG"
+              placeholder={dict.form.rgPlaceholder}
               value={formData.rg}
               onChange={handleChange}
               error={errors.rg}
@@ -92,16 +95,16 @@ export default function AccessPage() {
 
           <div className={styles.row}>
             <DatePicker
-              label="Data de Nascimento"
+              label={dict.form.birthDate}
               name="birthDate"
               value={formData.birthDate}
               onChange={handleChange}
               error={errors.birthDate}
             />
             <Input
-              label="Cargo"
+              label={dict.form.role}
               name="role"
-              placeholder="Função"
+              placeholder={dict.form.role}
               value={formData.role}
               onChange={handleChange}
               error={errors.role}
@@ -111,30 +114,30 @@ export default function AccessPage() {
 
         <section className={styles.section}>
           <Select 
-            label="Tipo de Ação / Acesso"
+            label={dict.form.action}
             name="action"
             value={formData.action}
             onChange={handleChange}
             error={errors.action}
             options={[
-              { label: "Tripulante - Embarque", value: "Tripulante - Embarque" },
-              { label: "Tripulante - Desembarque", value: "Tripulante - Desembarque" },
-              { label: "Visitante", value: "Visitante" },
-              { label: "Serviço de Manutenção", value: "Serviço de Manutenção" },
+              { label: dict.options.action.embark, value: "Tripulante - Embarque" },
+              { label: dict.options.action.disembark, value: "Tripulante - Desembarque" },
+              { label: dict.options.action.visitor, value: "Visitante" },
+              { label: dict.options.action.maintenance, value: "Serviço de Manutenção" },
             ]}
           />
         </section>
 
         <section className={styles.section}>
           <Select 
-            label="O veículo irá acessar o Terminal e é o condutor?"
+            label={dict.form.hasVehicle}
             name="hasVehicle"
             value={formData.hasVehicle}
             onChange={handleChange}
             error={errors.hasVehicle}
             options={[
-              { label: "Sim", value: "Sim" },
-              { label: "Não", value: "Não" },
+              { label: dict.options.yesNo.yes, value: "Sim" },
+              { label: dict.options.yesNo.no, value: "Não" },
             ]}
           />
         </section>
@@ -148,19 +151,19 @@ export default function AccessPage() {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <h3 className={styles.sectionTitle}>Dados do Veículo</h3>
+              <h3 className={styles.sectionTitle}>{dict.form.vehicleSection}</h3>
               
               <div className={styles.row}>
                 <Input
-                  label="Número da CNH"
+                  label={dict.form.cnhNumber}
                   name="cnhNumber"
-                  placeholder="Registro CNH"
+                  placeholder={dict.form.cnhNumberPlaceholder}
                   value={formData.cnhNumber}
                   onChange={handleChange}
                   error={errors.cnhNumber}
                 />
                 <DatePicker
-                  label="Validade CNH"
+                  label={dict.form.cnhValidity}
                   name="cnhValidity"
                   value={formData.cnhValidity}
                   onChange={handleChange}
@@ -170,7 +173,7 @@ export default function AccessPage() {
 
               <div className={styles.row}>
                 <Input
-                  label="Marca e Modelo"
+                  label={dict.form.vehicleModel}
                   name="vehicleModel"
                   placeholder="Ex: Fiat Uno"
                   value={formData.vehicleModel}
@@ -178,7 +181,7 @@ export default function AccessPage() {
                   error={errors.vehicleModel}
                 />
                 <Input
-                  label="Placa do Veículo"
+                  label={dict.form.vehiclePlate}
                   name="vehiclePlate"
                   placeholder="ABC-1234"
                   value={formData.vehiclePlate}
@@ -192,7 +195,7 @@ export default function AccessPage() {
 
         <div className={styles.footer}>
           <Button type="submit" isLoading={isSubmitting}>
-            Registrar Acesso
+            {isSubmitting ? dict.form.loading : dict.form.submit}
           </Button>
         </div>
       </form>

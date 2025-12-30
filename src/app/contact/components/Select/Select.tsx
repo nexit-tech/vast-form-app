@@ -4,19 +4,21 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { ChevronDown, Check, AlertCircle } from "lucide-react";
 import { useClickOutside } from "@/hooks";
+import { useLanguage } from "@/contexts/LanguageContext";
 import styles from "./Select.module.css";
 
 interface SelectProps {
   label: string;
   name: string;
   value: string;
-  onChange: (e: any) => void;
+  onChange: (e: { target: { name: string; value: string } }) => void;
   options: { label: string; value: string }[];
   error?: string;
 }
 
 export default function Select({ label, name, value, onChange, options, error }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { language } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useClickOutside(containerRef, () => setIsOpen(false));
@@ -65,7 +67,7 @@ export default function Select({ label, name, value, onChange, options, error }:
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className={value ? "" : styles.placeholder}>
-          {selectedLabel || "Selecione uma opção"}
+          {selectedLabel || (language === "pt" ? "Selecione uma opção" : "Select an option")}
         </span>
         <ChevronDown 
           className={`${styles.iconChevron} ${isOpen ? styles.iconRotate : ""}`} 
@@ -90,7 +92,7 @@ export default function Select({ label, name, value, onChange, options, error }:
                   onClick={() => handleSelect(option.value)}
                 >
                   {option.label}
-                  {value === option.value && <Check className={styles.checkIcon} />}
+                  {value === option.value && <Check className={styles.checkIcon} size={16} />}
                 </li>
               ))}
             </ul>

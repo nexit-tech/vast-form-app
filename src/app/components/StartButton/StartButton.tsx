@@ -8,11 +8,11 @@ import { ArrowRight } from "lucide-react";
 import styles from "./StartButton.module.css";
 
 interface StartButtonProps {
-  href: string;
-  label: string;
+  text: string;
+  href?: string;
 }
 
-export default function StartButton({ href, label }: StartButtonProps) {
+export default function StartButton({ text, href = "/contact" }: StartButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
@@ -77,7 +77,7 @@ export default function StartButton({ href, label }: StartButtonProps) {
           onClick={handleClick}
           disabled={isLoading}
         >
-          <span>{label}</span>
+          <span>{text}</span>
           <motion.div className={styles.iconContainer}>
             <motion.div variants={iconVariants}>
               <ArrowRight size={24} strokeWidth={3} />

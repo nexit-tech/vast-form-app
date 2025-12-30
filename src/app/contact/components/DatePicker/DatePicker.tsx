@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, AlertCircle } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { 
-  MONTH_NAMES, 
   getDaysInMonth, 
   getFirstDayOfMonth, 
   range, 
@@ -26,9 +26,11 @@ interface DatePickerProps {
 type ViewMode = "days" | "months" | "years";
 
 export default function DatePicker({ label, name, value, onChange, error }: DatePickerProps) {
+  const { language, dict } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("days");
   const [mounted, setMounted] = useState(false);
+  
   const initialDate = parseDate(value) || new Date();
   const [viewYear, setViewYear] = useState(initialDate.getFullYear());
   const [viewMonth, setViewMonth] = useState(initialDate.getMonth());
@@ -42,8 +44,15 @@ export default function DatePicker({ label, name, value, onChange, error }: Date
   const days = range(1, daysInMonth);
   const emptyDays = range(0, firstDay - 1);
   const currentYear = new Date().getFullYear();
-  const years = range(1920, currentYear + 5).reverse();
-  const weekDays = ["D", "S", "T", "Q", "Q", "S", "S"];
+  const years = range(1920, currentYear + 10).reverse();
+
+  const monthNames = language === "pt" 
+    ? ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+    : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+  const weekDays = language === "pt" 
+    ? ["D", "S", "T", "Q", "Q", "S", "S"]
+    : ["S", "M", "T", "W", "T", "F", "S"];
 
   const handleSelectDay = (day: number) => {
     const date = new Date(viewYear, viewMonth, day);
@@ -101,7 +110,7 @@ export default function DatePicker({ label, name, value, onChange, error }: Date
       
       <div className={styles.trigger} onClick={() => setIsOpen(true)}>
         <span className={value ? "" : styles.placeholder}>
-          {value ? formatDisplayDate(value) : "dd/mm/aaaa"}
+          {value ? formatDisplayDate(value, language) : dict.form.birthDatePlaceholder}
         </span>
         <CalendarIcon size={20} color="white" style={{ opacity: 0.8 }} />
       </div>
@@ -135,7 +144,7 @@ export default function DatePicker({ label, name, value, onChange, error }: Date
                       className={`${styles.titleBtn} ${viewMode === "months" ? styles.titleBtnActive : ""}`}
                       onClick={() => setViewMode(viewMode === "months" ? "days" : "months")}
                     >
-                      {MONTH_NAMES[viewMonth]}
+                      {monthNames[viewMonth]}
                     </button>
                     
                     <button 
@@ -180,7 +189,7 @@ export default function DatePicker({ label, name, value, onChange, error }: Date
 
                   {viewMode === "months" && (
                     <motion.div key="months" className={styles.selectionGrid} variants={slideVariants} initial="initial" animate="animate" exit="exit">
-                      {MONTH_NAMES.map((m, i) => (
+                      {monthNames.map((m, i) => (
                         <div 
                           key={m} 
                           className={`${styles.selectionItem} ${i === viewMonth ? styles.selectionActive : ""}`}

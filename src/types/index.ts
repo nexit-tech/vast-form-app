@@ -8,26 +8,88 @@ export type ActionType =
 export type YesNo = "" | "Sim" | "Não";
 
 export interface AccessFormData {
-  // Dados Gerais
-  vessel: string;        // Embarcação
-  company: string;       // Empresa
-  fullName: string;      // Nome Completo
-  documentId: string;    // CPF ou Passaporte
-  rg: string;            // RG
-  birthDate: string;     // Data de Nascimento
-  role: string;          // Cargo
-  action: ActionType;    // Ação
-  
-  // Gatilho Condicional
-  hasVehicle: YesNo;     // O veículo irá acessar...?
-
-  // Dados Condicionais (Veículo/Condutor)
+  vessel: string;
+  company: string;
+  fullName: string;
+  documentId: string;
+  rg: string;
+  birthDate: string;
+  role: string;
+  action: ActionType;
+  hasVehicle: YesNo;
   cnhNumber: string;
   cnhValidity: string;
-  vehicleModel: string;  // Marca e Modelo
+  vehicleModel: string;
   vehiclePlate: string;
 }
 
 export interface FormErrors {
   [key: string]: string | undefined;
+}
+
+export type Language = "pt" | "en";
+
+export interface Translation {
+  home: {
+    start: string;
+    subtitle: string;
+  };
+  form: {
+    title: string;
+    subtitle: string;
+    vessel: string;
+    company: string;
+    fullName: string;
+    documentId: string;
+    documentIdPlaceholder: string;
+    rg: string;
+    rgPlaceholder: string;
+    birthDate: string;
+    birthDatePlaceholder: string;
+    role: string;
+    action: string;
+    hasVehicle: string;
+    vehicleSection: string;
+    cnhNumber: string;
+    cnhNumberPlaceholder: string;
+    cnhValidity: string;
+    vehicleModel: string;
+    vehiclePlate: string;
+    submit: string;
+    loading: string;
+  };
+  options: {
+    action: {
+      embark: string;
+      disembark: string;
+      visitor: string;
+      maintenance: string;
+    };
+    yesNo: {
+      yes: string;
+      no: string;
+    };
+  };
+  errors: {
+    required: string;
+    email: string;
+    vessel: string;
+    company: string;
+    fullName: string;
+    documentId: string;
+    rg: string;
+    birthDate: string;
+    role: string;
+    action: string;
+    hasVehicle: string;
+    cnhNumber: string;
+    cnhValidity: string;
+    vehicleModel: string;
+    vehiclePlate: string;
+  };
+  success: {
+    title: string;
+    message: string;
+    back: string;
+  };
 }
