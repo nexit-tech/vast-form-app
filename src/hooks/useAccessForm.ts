@@ -25,6 +25,7 @@ const formatDateToDB = (dateString: string): string | null => {
   return `${year}-${month}-${day}`;
 };
 
+// Interface genérica que satisfaz tanto inputs nativos quanto customizados
 interface FieldChangeEvent {
   target: {
     name: string;
@@ -118,7 +119,7 @@ export const useAccessForm = (dict: Translation) => {
         window.scrollTo(0, 0);
       } catch (error) {
         console.error("Error submitting form:", error);
-        alert("Erro ao enviar. Tente novamente.");
+        alert("Erro ao enviar formulário. Tente novamente.");
       }
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });
