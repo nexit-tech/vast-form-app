@@ -1,6 +1,6 @@
 import { useState, FormEvent } from "react";
 import { AccessFormData, FormErrors, Translation } from "@/types";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase-legacy";
 
 const initialData: AccessFormData = {
   vessel: "",
