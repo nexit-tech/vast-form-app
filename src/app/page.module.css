@@ -1,53 +1,19 @@
 .main {
   position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+.contentWrapper {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 110vh;
+  min-height: 100vh;
   padding: 3.5rem 1.5rem;
-  overflow: hidden;
-  background-color: #352EF2;
-}
-
-.main::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 50% 0%, #4A41F5 0%, #352EF2 80%);
-  z-index: 0;
-}
-
-.main::after {
-  content: '';
-  position: absolute;
-  top: -25%;
-  left: -25%;
-  width: 150%;
-  height: 150%;
-  background-image: url('/images/background2.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity: 0.15;
-  mix-blend-mode: multiply;
-  z-index: 0;
-  animation: 
-    panTexture 120s linear infinite alternate,
-    pulseTexture 10s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-@keyframes panTexture {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(-15%, -15%) scale(1.1); }
-}
-
-@keyframes pulseTexture {
-  0% { opacity: 0.2; }
-  100% { opacity: 0.5; }
 }
 
 .topRightLogo {
@@ -58,12 +24,6 @@
   width: 120px;
   height: auto;
   animation: fadeDown 0.8s cubic-bezier(0.4, 0, 0.2, 1) backwards;
-}
-
-.topRightLogo img {
-  width: 100%;
-  height: auto;
-  display: block;
 }
 
 .header {
@@ -125,26 +85,31 @@
 }
 
 .flagBtn {
-  font-size: 2.2rem;
+  position: relative;
+  width: 48px;
+  height: 48px;
   background: none;
-  border: none;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
   cursor: pointer;
   padding: 0;
-  opacity: 0.5;
-  filter: grayscale(1) drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+  overflow: hidden;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .flagBtn:hover {
-  opacity: 0.9;
-  transform: scale(1.15);
-  filter: grayscale(0.2);
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.8);
 }
 
 .active {
-  opacity: 1;
-  filter: grayscale(0) drop-shadow(0 8px 12px rgba(0,0,0,0.2));
-  transform: scale(1.3);
+  border-color: #FFFFFF;
+  transform: scale(1.15);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.flagImage {
+  object-fit: cover;
 }
 
 @keyframes fadeDown {
@@ -160,4 +125,10 @@
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+  }
 }

@@ -21,11 +21,25 @@ const initialData: AccessFormData = {
 const formatDateToDB = (dateString: string): string | null => {
   if (!dateString) return null;
 
-  const parts = dateString.split("/");
-  if (parts.length !== 3) return null;
+  if (dateString.includes("-")) {
+    const parts = dateString.split("-");
+    if (parts.length === 3) {
+      const [year, month, day] = parts;
+      if (year.length === 4 && month.length === 2 && day.length === 2) {
+        return dateString;
+      }
+    }
+  }
 
-  const [day, month, year] = parts;
-  return `${year}-${month}-${day}`;
+  if (dateString.includes("/")) {
+    const parts = dateString.split("/");
+    if (parts.length !== 3) return null;
+    const [day, month, year] = parts;
+    if (year.length !== 4 || month.length !== 2 || day.length !== 2) return null;
+    return `${year}-${month}-${day}`;
+  }
+
+  return null;
 };
 
 export interface FieldChangeEvent {
@@ -51,14 +65,26 @@ export const useContactForm = (dict: Translation) => {
     if (!formData.fullName.trim()) newErrors.fullName = errorDict.fullName;
     if (!formData.documentId.trim()) newErrors.documentId = errorDict.documentId;
     if (!formData.rg.trim()) newErrors.rg = errorDict.rg;
-    if (!formData.birthDate.trim()) newErrors.birthDate = errorDict.birthDate;
+
+    if (!formData.birthDate.trim()) {
+      newErrors.birthDate = errorDict.birthDate;
+    } else if (formatDateToDB(formData.birthDate) === null) {
+      newErrors.birthDate = "Data inválida";
+    }
+
     if (!formData.role.trim()) newErrors.role = errorDict.role;
     if (!formData.action) newErrors.action = errorDict.action;
     if (!formData.hasVehicle) newErrors.hasVehicle = errorDict.hasVehicle;
     
     if (formData.hasVehicle === "Sim") {
       if (!formData.cnhNumber.trim()) newErrors.cnhNumber = errorDict.cnhNumber;
-      if (!formData.cnhValidity.trim()) newErrors.cnhValidity = errorDict.cnhValidity;
+
+      if (!formData.cnhValidity.trim()) {
+        newErrors.cnhValidity = errorDict.cnhValidity;
+      } else if (formatDateToDB(formData.cnhValidity) === null) {
+        newErrors.cnhValidity = "Data inválida";
+      }
+
       if (!formData.vehicleModel.trim()) newErrors.vehicleModel = errorDict.vehicleModel;
       if (!formData.vehiclePlate.trim()) newErrors.vehiclePlate = errorDict.vehiclePlate;
     }
@@ -95,6 +121,12 @@ export const useContactForm = (dict: Translation) => {
 
     if (validate()) {
       try {
+        const formattedBirthDate = formatDateToDB(formData.birthDate);
+
+        if (!formattedBirthDate) {
+           throw new Error("Data de nascimento inválida");
+        }
+
         const { error } = await supabase.from("access_requests").insert([
           {
             vessel: formData.vessel,
@@ -102,7 +134,7 @@ export const useContactForm = (dict: Translation) => {
             full_name: formData.fullName,
             document_id: formData.documentId,
             rg: formData.rg,
-            birth_date: formatDateToDB(formData.birthDate),
+            birth_date: formattedBirthDate,
             role: formData.role,
             action: formData.action,
             has_vehicle: formData.hasVehicle,
@@ -118,9 +150,9 @@ export const useContactForm = (dict: Translation) => {
         setFormData(initialData);
         setIsSuccess(true);
         window.scrollTo(0, 0);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error submitting form:", error);
-        alert("Erro ao enviar formulário. Tente novamente.");
+        alert(`Erro ao enviar: ${error.message || "Verifique os dados."}`);
       }
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });
