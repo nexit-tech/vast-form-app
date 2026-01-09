@@ -1,6 +1,7 @@
 "use client";
 
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useLanguage } from "@/contexts/LanguageContext";
 import styles from "./Pagination.module.css";
 
 interface PaginationProps {
@@ -11,6 +12,8 @@ export default function Pagination({ totalPages }: PaginationProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
+  const { language } = useLanguage();
+  const isPt = language === "pt";
 
   const currentPage = Number(searchParams.get("page")) || 1;
 
@@ -33,11 +36,11 @@ export default function Pagination({ totalPages }: PaginationProps) {
         disabled={currentPage <= 1}
         onClick={() => handlePageChange(currentPage - 1)}
       >
-        ← Anterior
+        {isPt ? "← Anterior" : "← Previous"}
       </button>
       
       <span className={styles.info}>
-        Página <span className={styles.current}>{currentPage}</span> de {totalPages}
+        {isPt ? "Página" : "Page"} <span className={styles.current}>{currentPage}</span> {isPt ? "de" : "of"} {totalPages}
       </span>
 
       <button
@@ -45,7 +48,7 @@ export default function Pagination({ totalPages }: PaginationProps) {
         disabled={currentPage >= totalPages}
         onClick={() => handlePageChange(currentPage + 1)}
       >
-        Próximo →
+        {isPt ? "Próximo →" : "Next →"}
       </button>
     </div>
   );

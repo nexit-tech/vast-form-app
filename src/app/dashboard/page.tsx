@@ -6,7 +6,7 @@ import SearchFilters from "./components/SearchFilters/SearchFilters";
 import Pagination from "./components/Pagination/Pagination";
 import styles from "./page.module.css";
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 10;
 
 export default async function DashboardPage({
   searchParams,
@@ -14,6 +14,9 @@ export default async function DashboardPage({
   searchParams?: {
     query?: string;
     page?: string;
+    status?: string;
+    sort?: string;
+    order?: string;
   };
 }) {
   const supabase = createClient();
@@ -27,14 +30,25 @@ export default async function DashboardPage({
   }
 
   const query = searchParams?.query || "";
+  const status = searchParams?.status || "all";
+  const rawSort = searchParams?.sort || "created_at";
+  const order = searchParams?.order || "desc";
   const currentPage = Number(searchParams?.page) || 1;
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  const validSortColumns = [
+    "created_at", 
+    "full_name", 
+    "company", 
+    "role", 
+    "status", 
+    "vessel", 
+    "document_id"
+  ];
+  const sort = validSortColumns.includes(rawSort) ? rawSort : "created_at";
 
   let dbQuery = supabase
     .from("access_requests")
-    .select("*", { count: "exact" })
-    .order("created_at", { ascending: false })
-    .range(offset, offset + ITEMS_PER_PAGE - 1);
+    .select("*", { count: "exact" });
 
   if (query) {
     dbQuery = dbQuery.or(
@@ -42,6 +56,13 @@ export default async function DashboardPage({
     );
   }
 
+  if (status && status !== "all") {
+    dbQuery = dbQuery.eq("status", status);
+  }
+
+  const isAscending = order === "asc";
+  dbQuery = dbQuery.order(sort, { ascending: isAscending });
+  dbQuery = dbQuery.range(offset, offset + ITEMS_PER_PAGE - 1);
   const { data: requests, count, error } = await dbQuery;
 
   if (error) {
@@ -53,14 +74,15 @@ export default async function DashboardPage({
   return (
     <main className={styles.container}>
       <header className={styles.header}>
-        <div>
+        <div className={styles.titleWrapper}>
           <h1 className={styles.title}>DASHBOARD</h1>
           <p className={styles.subtitle}>
-            Monitoramento de Acessos
+            Visão Geral de Solicitações
           </p>
         </div>
         <SignOutButton />
       </header>
+      
       <SearchFilters />
 
       {requests && requests.length > 0 ? (
@@ -71,8 +93,8 @@ export default async function DashboardPage({
       ) : (
         <div className={styles.emptyState}>
           <p>
-            {query 
-              ? `Nenhum resultado encontrado para "${query}"`
+            {query || status !== "all"
+              ? "Nenhum resultado encontrado para os filtros aplicados."
               : "Nenhum registro de acesso encontrado."}
           </p>
         </div>

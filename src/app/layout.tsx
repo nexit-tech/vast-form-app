@@ -34,9 +34,6 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Vast Form App",
   description: "Aplicação de formulário da Vast Infra",
-  icons: {
-    icon: "/images/vastlogo.png",
-  },
 };
 
 export default function RootLayout({

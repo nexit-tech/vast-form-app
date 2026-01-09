@@ -14,17 +14,6 @@ export default function Home() {
       <Background />
 
       <div className={styles.contentWrapper} key={language}>
-        <div className={styles.topRightLogo}>
-          <Image
-            src="/images/vastbanner.png"
-            alt="Vast Logo"
-            width={120}
-            height={40}
-            priority
-            style={{ width: "100%", height: "auto" }}
-          />
-        </div>
-
         <header className={styles.header}>
           <span className={styles.eyebrow}>
             {language === "pt" ? "Formulário de Acesso" : "Access Form"}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useContactForm } from "@/hooks/useContactForm";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { AnimatePresence, motion } from "framer-motion";
@@ -9,19 +10,29 @@ import DatePicker from "./components/DatePicker/DatePicker";
 import Button from "./components/Button/Button";
 import BackButton from "./components/BackButton/BackButton";
 import SuccessView from "./components/SuccessView/SuccessView";
+import ConfirmationModal from "./components/ConfirmationModal/ConfirmationModal";
+import QueueList from "./components/QueueList/QueueList";
 import styles from "./page.module.css";
 
 export default function AccessPage() {
-  const { dict } = useLanguage();
+  const { dict, language } = useLanguage();
+  const isPt = language === "pt";
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const {
     formData,
+    queue,
     errors,
     isSubmitting,
     isSuccess,
     handleChange,
+    handleAddToQueue,
+    handleRemoveFromQueue,
     handleSubmit,
+    handleSubmitQueue,
   } = useContactForm(dict);
+
+  const isLocked = queue.length > 0;
 
   if (isSuccess) {
     return (
@@ -29,10 +40,30 @@ export default function AccessPage() {
         <nav className={styles.nav}>
            <BackButton />
         </nav>
-        <SuccessView userName={formData.fullName} />
+        <SuccessView userName={queue.length > 0 ? `${queue.length} pessoas` : formData.fullName} />
       </main>
     );
   }
+
+  const onAddToList = () => {
+    const added = handleAddToQueue(true);
+    if (added) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const onPreSubmit = () => {
+    if (queue.length > 0) {
+      setShowConfirmModal(true);
+    } else {
+      handleSubmit({ preventDefault: () => {} } as any);
+    }
+  };
+
+  const onConfirmSubmission = async () => {
+    await handleSubmitQueue();
+    setShowConfirmModal(false);
+  };
 
   return (
     <main className={styles.container}>
@@ -44,26 +75,35 @@ export default function AccessPage() {
         <h1 className={styles.title}>{dict.form.title}</h1>
         <p className={styles.subtitle}>{dict.form.subtitle}</p>
       </header>
-      
-      <form className={styles.form} onSubmit={handleSubmit} noValidate>
-        <section className={styles.section}>
-          <Input
-            label={dict.form.vessel}
-            name="vessel"
-            placeholder={dict.form.vessel}
-            value={formData.vessel}
-            onChange={handleChange}
-            error={errors.vessel}
-          />
 
-          <Input
-            label={dict.form.company}
-            name="company"
-            placeholder={dict.form.company}
-            value={formData.company}
-            onChange={handleChange}
-            error={errors.company}
-          />
+      <QueueList 
+        queue={queue} 
+        onRemove={handleRemoveFromQueue}
+        title={isPt ? "Lista de Envio" : "Submission List"}
+        removeText={isPt ? "Remover" : "Remove"}
+      />
+      
+      <form className={styles.form} onSubmit={(e) => e.preventDefault()} noValidate>
+        <section className={styles.section}>
+          <div className={isLocked ? styles.lockedGroup : ""}>
+            <Input
+              label={dict.form.vessel}
+              name="vessel"
+              placeholder={dict.form.vessel}
+              value={formData.vessel}
+              onChange={handleChange}
+              error={errors.vessel}
+            />
+
+            <Input
+              label={dict.form.company}
+              name="company"
+              placeholder={dict.form.company}
+              value={formData.company}
+              onChange={handleChange}
+              error={errors.company}
+            />
+          </div>
 
           <Input
             label={dict.form.fullName}
@@ -194,11 +234,57 @@ export default function AccessPage() {
         </AnimatePresence>
 
         <div className={styles.footer}>
-          <Button type="submit" isLoading={isSubmitting}>
-            {isSubmitting ? dict.form.loading : dict.form.submit}
-          </Button>
+          <div className={styles.buttonGroup}>
+            <button 
+              type="button" 
+              className={styles.addButton}
+              onClick={onAddToList}
+            >
+              {isPt ? "+ Adicionar à Lista (Mesma Empresa)" : "+ Add to List (Same Company)"}
+            </button>
+
+            <Button 
+              type="button" 
+              isLoading={isSubmitting}
+              onClick={onPreSubmit}
+            >
+              {isSubmitting 
+                ? dict.form.loading 
+                : queue.length > 0 
+                  ? (isPt ? `Enviar Lista (${queue.length})` : `Submit List (${queue.length})`)
+                  : dict.form.submit
+              }
+            </Button>
+          </div>
         </div>
       </form>
+
+      <ConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={onConfirmSubmission}
+        isLoading={isSubmitting}
+        title={isPt ? "Confirmar Envio em Massa" : "Confirm Bulk Submission"}
+        message={
+          <>
+            <p>
+              {isPt 
+                ? `Você está prestes a enviar o cadastro de ${queue.length} pessoas para:` 
+                : `You are about to submit access requests for ${queue.length} people to:`}
+            </p>
+            <p style={{ marginTop: "0.5rem", fontWeight: "bold", color: "#FFF" }}>
+               {queue[0]?.company} ({queue[0]?.vessel})
+            </p>
+            <p style={{ marginTop: "1rem", fontSize: "0.85rem" }}>
+              {isPt 
+                ? "Certifique-se de que todos os dados estão corretos." 
+                : "Please ensure all data is correct."}
+            </p>
+          </>
+        }
+        confirmText={isPt ? "Confirmar e Enviar" : "Confirm and Submit"}
+        cancelText={isPt ? "Cancelar" : "Cancel"}
+      />
     </main>
   );
 }

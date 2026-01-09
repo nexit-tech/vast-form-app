@@ -1,0 +1,77 @@
+.container {
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.title {
+  font-size: 0.875rem;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0.25rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.item:last-child {
+  margin-bottom: 0;
+}
+
+.item:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.name {
+  color: #FFFFFF;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.role {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  color: #ff6b6b;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.removeBtn:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
