@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 import styles from "./SuccessView.module.css";
 
 interface SuccessViewProps {
@@ -8,6 +9,8 @@ interface SuccessViewProps {
 }
 
 export default function SuccessView({ userName }: SuccessViewProps) {
+  const { dict } = useLanguage();
+
   return (
     <div className={styles.container}>
       <motion.div 
@@ -37,10 +40,10 @@ export default function SuccessView({ userName }: SuccessViewProps) {
           </svg>
         </motion.div>
 
-        <h2 className={styles.title}>Solicitação Enviada!</h2>
+        <h2 className={styles.title}>{dict.success.title}</h2>
         
         <p className={styles.text}>
-          Os dados de <strong>{userName}</strong> foram recebidos e encaminhados para análise da equipe interna.
+          {dict.success.message}
         </p>
       </motion.div>
     </div>

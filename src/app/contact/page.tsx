@@ -160,10 +160,12 @@ export default function AccessPage() {
             onChange={handleChange}
             error={errors.action}
             options={[
-              { label: dict.options.action.embark, value: "Tripulante - Embarque" },
-              { label: dict.options.action.disembark, value: "Tripulante - Desembarque" },
-              { label: dict.options.action.visitor, value: "Visitante" },
-              { label: dict.options.action.maintenance, value: "Serviço de Manutenção" },
+              { label: dict.options.action.portCrewEmbark, value: "Serviços Portuários - Tripulante Embarque" },
+              { label: dict.options.action.portCrewDisembark, value: "Serviços Portuários - Tripulante Desembarque" },
+              { label: dict.options.action.portOnboardMaintenance, value: "Serviços Portuários - Manutenção a Bordo" },
+              { label: dict.options.action.portOnboardVisit, value: "Serviços Portuários - Visita a Bordo" },
+              { label: dict.options.action.tlaMaintenance, value: "Terminal TLA - Serviços de Manutenção" },
+              { label: dict.options.action.tlaVisit, value: "Terminal TLA - Visitante" },
             ]}
           />
         </section>

@@ -66,7 +66,7 @@ export default function LoginPage() {
             label="E-mail Corporativo"
             name="email"
             type="email"
-            placeholder="admin@vastinfra.com"
+            placeholder="admin@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             error=""

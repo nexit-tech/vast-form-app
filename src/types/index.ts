@@ -1,9 +1,11 @@
 export type ActionType = 
   | "" 
-  | "Tripulante - Embarque" 
-  | "Tripulante - Desembarque" 
-  | "Visitante" 
-  | "Serviço de Manutenção";
+  | "Serviços Portuários - Tripulante Embarque" 
+  | "Serviços Portuários - Tripulante Desembarque" 
+  | "Serviços Portuários - Manutenção a Bordo" 
+  | "Serviços Portuários - Visita a Bordo" 
+  | "Terminal TLA - Serviços de Manutenção" 
+  | "Terminal TLA - Visitante";
 
 export type YesNo = "" | "Sim" | "Não";
 
@@ -60,10 +62,12 @@ export interface Translation {
   };
   options: {
     action: {
-      embark: string;
-      disembark: string;
-      visitor: string;
-      maintenance: string;
+      portCrewEmbark: string;
+      portCrewDisembark: string;
+      portOnboardMaintenance: string;
+      portOnboardVisit: string;
+      tlaMaintenance: string;
+      tlaVisit: string;
     };
     yesNo: {
       yes: string;
@@ -86,6 +90,7 @@ export interface Translation {
     cnhValidity: string;
     vehicleModel: string;
     vehiclePlate: string;
+    submit: string;
   };
   success: {
     title: string;

@@ -19,8 +19,8 @@ export default function Home() {
             {language === "pt" ? "Formulário de Acesso" : "Access Form"}
           </span>
           <h1 className={styles.title}>
-            VAST<br />
-            FORM
+            PORT<br />
+            ACCESS
           </h1>
           <p className={styles.subtitle}>
             {dict.home.subtitle}

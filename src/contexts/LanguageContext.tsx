@@ -12,7 +12,7 @@ const translations: Record<Language, Translation> = {
     form: {
       title: "ACESSO",
       subtitle: "Preencha os dados do visitante ou tripulante.",
-      vessel: "Embarcação",
+      vessel: "Embarcação | TLA (Atividades no Terminal)",
       company: "Empresa",
       fullName: "Nome Completo",
       documentId: "CPF ou Passaporte",
@@ -35,10 +35,12 @@ const translations: Record<Language, Translation> = {
     },
     options: {
       action: {
-        embark: "Tripulante - Embarque",
-        disembark: "Tripulante - Desembarque",
-        visitor: "Visitante",
-        maintenance: "Serviço de Manutenção",
+        portCrewEmbark: "Serviços Portuários - Tripulante Embarque",
+        portCrewDisembark: "Serviços Portuários - Tripulante Desembarque",
+        portOnboardMaintenance: "Serviços Portuários - Manutenção a Bordo",
+        portOnboardVisit: "Serviços Portuários - Visita a Bordo",
+        tlaMaintenance: "Terminal TLA - Serviços de Manutenção",
+        tlaVisit: "Terminal TLA - Visitante",
       },
       yesNo: {
         yes: "Sim",
@@ -48,7 +50,7 @@ const translations: Record<Language, Translation> = {
     errors: {
       required: "Campo obrigatório",
       email: "Email inválido",
-      vessel: "Embarcação obrigatória",
+      vessel: "Embarcação/TLA obrigatória",
       company: "Empresa obrigatória",
       fullName: "Nome completo obrigatório",
       documentId: "CPF/Passaporte obrigatório",
@@ -61,6 +63,7 @@ const translations: Record<Language, Translation> = {
       cnhValidity: "Validade da CNH obrigatória",
       vehicleModel: "Modelo do veículo obrigatório",
       vehiclePlate: "Placa obrigatória",
+      submit: "Registrar Acesso",
     },
     success: {
       title: "Acesso Registrado!",
@@ -76,7 +79,7 @@ const translations: Record<Language, Translation> = {
     form: {
       title: "ACCESS",
       subtitle: "Fill in the visitor or crew member details.",
-      vessel: "Vessel",
+      vessel: "Vessel | TLA (Terminal Activities)",
       company: "Company",
       fullName: "Full Name",
       documentId: "Passport / SSN",
@@ -99,10 +102,12 @@ const translations: Record<Language, Translation> = {
     },
     options: {
       action: {
-        embark: "Crew - Embarkation",
-        disembark: "Crew - Disembarkation",
-        visitor: "Visitor",
-        maintenance: "Maintenance Service",
+        portCrewEmbark: "Port Services - Crew Embarkation",
+        portCrewDisembark: "Port Services - Crew Disembarkation",
+        portOnboardMaintenance: "Port Services - Onboard Maintenance",
+        portOnboardVisit: "Port Services - Onboard Visit",
+        tlaMaintenance: "TLA Terminal - Maintenance Services",
+        tlaVisit: "TLA Terminal - Visit",
       },
       yesNo: {
         yes: "Yes",
@@ -112,7 +117,7 @@ const translations: Record<Language, Translation> = {
     errors: {
       required: "Field required",
       email: "Invalid email",
-      vessel: "Vessel is required",
+      vessel: "Vessel/TLA is required",
       company: "Company is required",
       fullName: "Full name is required",
       documentId: "Passport/SSN is required",
@@ -125,6 +130,7 @@ const translations: Record<Language, Translation> = {
       cnhValidity: "License expiration is required",
       vehicleModel: "Vehicle model is required",
       vehiclePlate: "License plate is required",
+      submit: "Register Access",
     },
     success: {
       title: "Access Registered!",

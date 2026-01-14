@@ -32,8 +32,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Vast Form App",
-  description: "Aplicação de formulário da Vast Infra",
+  title: "Port Access Control",
+  description: "Sistema de Controle de Acesso Portuário",
 };
 
 export default function RootLayout({
