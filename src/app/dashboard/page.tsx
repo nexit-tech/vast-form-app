@@ -35,6 +35,7 @@ export default async function DashboardPage({
   const order = searchParams?.order || "desc";
   const currentPage = Number(searchParams?.page) || 1;
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+  
   const validSortColumns = [
     "created_at", 
     "full_name", 
@@ -52,7 +53,7 @@ export default async function DashboardPage({
 
   if (query) {
     dbQuery = dbQuery.or(
-      `full_name.ilike.%${query}%,company.ilike.%${query}%,document_id.ilike.%${query}%,vessel.ilike.%${query}%`
+      `full_name.ilike.%${query}%,company.ilike.%${query}%,document_id.ilike.%${query}%,vessel.ilike.%${query}%,rg.ilike.%${query}%,vehicle_plate.ilike.%${query}%,vehicle_model.ilike.%${query}%`
     );
   }
 
