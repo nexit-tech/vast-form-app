@@ -2,11 +2,15 @@
 
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { ChangeEvent } from "react";
-import { Search, ChevronDown, Filter } from "lucide-react";
+import { Search, Filter } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import styles from "./SearchFilters.module.css";
 
-export default function SearchFilters() {
+interface SearchFiltersProps {
+  userRole?: string;
+}
+
+export default function SearchFilters({ userRole = "admin" }: SearchFiltersProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -57,19 +61,21 @@ export default function SearchFilters() {
         />
       </div>
 
-      <div className={styles.filterWrapper}>
-        <select 
-          className={styles.select}
-          onChange={(e) => handleStatusFilter(e.target.value)}
-          defaultValue={searchParams.get("status")?.toString() || "all"}
-        >
-          <option value="all">{isPt ? "Todos os Status" : "All Status"}</option>
-          <option value="pending">{isPt ? "Pendente" : "Pending"}</option>
-          <option value="approved">{isPt ? "Aprovado" : "Approved"}</option>
-          <option value="rejected">{isPt ? "Rejeitado" : "Rejected"}</option>
-        </select>
-        <Filter className={styles.selectIcon} size={16} />
-      </div>
+      {userRole !== "viewer" && (
+        <div className={styles.filterWrapper}>
+          <select 
+            className={styles.select}
+            onChange={(e) => handleStatusFilter(e.target.value)}
+            defaultValue={searchParams.get("status")?.toString() || "all"}
+          >
+            <option value="all">{isPt ? "Todos os Status" : "All Status"}</option>
+            <option value="pending">{isPt ? "Pendente" : "Pending"}</option>
+            <option value="approved">{isPt ? "Aprovado" : "Approved"}</option>
+            <option value="rejected">{isPt ? "Rejeitado" : "Rejected"}</option>
+          </select>
+          <Filter className={styles.selectIcon} size={16} />
+        </div>
+      )}
     </div>
   );
 }

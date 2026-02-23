@@ -11,9 +11,22 @@ export async function updateRequestStatus(id: string, newStatus: "approved" | "r
     throw new Error("Unauthorized");
   }
 
+  const userRole = user.user_metadata?.role || "admin";
+  if (userRole === "viewer") {
+    throw new Error("Forbidden: Viewers cannot update status");
+  }
+
+  const updateData: { status: string; approved_at?: string | null } = { status: newStatus };
+
+  if (newStatus === "approved") {
+    updateData.approved_at = new Date().toISOString();
+  } else {
+    updateData.approved_at = null;
+  }
+
   const { error } = await supabase
     .from("access_requests")
-    .update({ status: newStatus })
+    .update(updateData)
     .eq("id", id);
 
   if (error) {
@@ -31,6 +44,11 @@ export async function deleteRequest(id: string) {
   const { data: { user }, error: authError } = await supabase.auth.getUser();
   if (authError || !user) {
     throw new Error("Unauthorized");
+  }
+
+  const userRole = user.user_metadata?.role || "admin";
+  if (userRole === "viewer") {
+    throw new Error("Forbidden: Viewers cannot delete requests");
   }
 
   const { error } = await supabase

@@ -29,8 +29,10 @@ export default async function DashboardPage({
     redirect("/login");
   }
 
+  const userRole = user.user_metadata?.role || "admin";
+
   const query = searchParams?.query || "";
-  const status = searchParams?.status || "all";
+  const status = userRole === "viewer" ? "approved" : (searchParams?.status || "all");
   const rawSort = searchParams?.sort || "created_at";
   const order = searchParams?.order || "desc";
   const currentPage = Number(searchParams?.page) || 1;
@@ -84,11 +86,11 @@ export default async function DashboardPage({
         <SignOutButton />
       </header>
       
-      <SearchFilters />
+      <SearchFilters userRole={userRole} />
 
       {requests && requests.length > 0 ? (
         <>
-          <DashboardList requests={requests} />
+          <DashboardList requests={requests} userRole={userRole} />
           <Pagination totalPages={totalPages} />
         </>
       ) : (

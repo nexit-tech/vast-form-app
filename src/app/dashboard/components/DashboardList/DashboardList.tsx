@@ -34,13 +34,15 @@ interface Request {
   vehicle_plate?: string;
   cnh_number?: string;
   cnh_validity?: string;
+  approved_at?: string;
 }
 
 interface DashboardListProps {
   requests: Request[];
+  userRole?: string;
 }
 
-export default function DashboardList({ requests }: DashboardListProps) {
+export default function DashboardList({ requests, userRole = "admin" }: DashboardListProps) {
   const { language } = useLanguage();
   const isPt = language === "pt";
   const router = useRouter();
@@ -49,16 +51,19 @@ export default function DashboardList({ requests }: DashboardListProps) {
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
-  // Optimistic UI: Atualiza a lista instantaneamente
   const [optimisticRequests, addOptimisticRequest] = useOptimistic(
     requests,
-    (state, updatedRequest: { id: string; type: 'update' | 'delete'; status?: string }) => {
+    (state, updatedRequest: { id: string; type: 'update' | 'delete'; status?: string; approved_at?: string }) => {
       if (updatedRequest.type === 'delete') {
         return state.filter(req => req.id !== updatedRequest.id);
       }
       return state.map(req => 
         req.id === updatedRequest.id 
-          ? { ...req, status: updatedRequest.status! } 
+          ? { 
+              ...req, 
+              status: updatedRequest.status!,
+              approved_at: updatedRequest.approved_at !== undefined ? updatedRequest.approved_at : req.approved_at
+            } 
           : req
       );
     }
@@ -83,13 +88,13 @@ export default function DashboardList({ requests }: DashboardListProps) {
     if (processingId) return;
     
     startTransition(async () => {
-      addOptimisticRequest({ id, type: 'update', status });
+      const approved_at = status === "approved" ? new Date().toISOString() : undefined;
+      addOptimisticRequest({ id, type: 'update', status, approved_at });
       setProcessingId(id);
       try {
         await updateRequestStatus(id, status);
       } catch (error) {
         console.error("Failed to update status");
-        // Em um cenário real, poderíamos reverter ou mostrar um toast de erro
       } finally {
         setProcessingId(null);
       }
@@ -149,6 +154,33 @@ export default function DashboardList({ requests }: DashboardListProps) {
     }
   };
 
+  const getExpirationInfo = (approvedAt?: string) => {
+    if (!approvedAt) return null;
+    
+    const approvalDate = new Date(approvedAt);
+    const expirationDate = new Date(approvalDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const now = new Date();
+    
+    const diffTime = expirationDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    const formattedDate = expirationDate.toLocaleDateString(isPt ? "pt-BR" : "en-US", {
+      day: "2-digit", month: "2-digit", year: "2-digit"
+    });
+
+    if (diffDays < 0) {
+      return { text: isPt ? "Expirado" : "Expired", colorClass: styles.expiresCritical, date: formattedDate };
+    }
+    if (diffDays === 0) {
+      return { text: isPt ? "Expira hoje" : "Expires today", colorClass: styles.expiresCritical, date: formattedDate };
+    }
+    
+    const colorClass = diffDays <= 2 ? styles.expiresCritical : (diffDays <= 4 ? styles.expiresWarning : "");
+    const text = isPt ? `Expira em ${diffDays} dia(s)` : `Expires in ${diffDays} day(s)`;
+    
+    return { text, colorClass, date: formattedDate };
+  };
+
   if (optimisticRequests.length === 0) {
     return (
       <div className={styles.emptyContainer}>
@@ -188,10 +220,23 @@ export default function DashboardList({ requests }: DashboardListProps) {
               {optimisticRequests.map((req) => {
                 const hasVehicle = req.has_vehicle === "Sim" || req.has_vehicle === true;
                 const isProcessing = processingId === req.id;
+                const expirationInfo = req.status === "approved" ? getExpirationInfo(req.approved_at) : null;
                 
                 return (
                   <tr key={req.id} onClick={() => setSelectedRequest(req)} className={styles.tr}>
-                    <td className={styles.td}>{getStatusBadge(req.status)}</td>
+                    <td className={styles.td}>
+                      {getStatusBadge(req.status)}
+                      {expirationInfo && (
+                        <div className={styles.expiresContainer}>
+                          <span className={`${styles.expiresText} ${expirationInfo.colorClass}`}>
+                            {expirationInfo.text}
+                          </span>
+                          <span className={`${styles.expiresText} ${expirationInfo.colorClass}`}>
+                            ({expirationInfo.date})
+                          </span>
+                        </div>
+                      )}
+                    </td>
                     <td className={styles.td}>
                       <div className={styles.primaryText}>{req.full_name}</div>
                       <div className={styles.secondaryText}>{req.document_id}</div>
@@ -227,30 +272,34 @@ export default function DashboardList({ requests }: DashboardListProps) {
                           <Loader2 className={styles.spinner} size={20} />
                         ) : (
                           <>
-                            <button 
-                              className={`${styles.actionBtn} ${styles.btnApprove}`}
-                              onClick={(e) => handleStatusUpdate(e, req.id, "approved")}
-                              title={isPt ? "Aprovar" : "Approve"}
-                              disabled={req.status === 'approved'}
-                            >
-                              <Check size={18} strokeWidth={2.5} />
-                            </button>
-                            <button 
-                              className={`${styles.actionBtn} ${styles.btnReject}`}
-                              onClick={(e) => handleStatusUpdate(e, req.id, "rejected")}
-                              title={isPt ? "Rejeitar" : "Reject"}
-                              disabled={req.status === 'rejected'}
-                            >
-                              <X size={18} strokeWidth={2.5} />
-                            </button>
-                            <div className={styles.divider} />
-                            <button 
-                              className={`${styles.actionBtn} ${styles.btnDelete}`}
-                              onClick={(e) => handleDelete(e, req.id)}
-                              title={isPt ? "Excluir" : "Delete"}
-                            >
-                              <Trash2 size={18} strokeWidth={2.5} />
-                            </button>
+                            {userRole !== "viewer" && (
+                              <>
+                                <button 
+                                  className={`${styles.actionBtn} ${styles.btnApprove}`}
+                                  onClick={(e) => handleStatusUpdate(e, req.id, "approved")}
+                                  title={isPt ? "Aprovar" : "Approve"}
+                                  disabled={req.status === 'approved'}
+                                >
+                                  <Check size={18} strokeWidth={2.5} />
+                                </button>
+                                <button 
+                                  className={`${styles.actionBtn} ${styles.btnReject}`}
+                                  onClick={(e) => handleStatusUpdate(e, req.id, "rejected")}
+                                  title={isPt ? "Rejeitar" : "Reject"}
+                                  disabled={req.status === 'rejected'}
+                                >
+                                  <X size={18} strokeWidth={2.5} />
+                                </button>
+                                <div className={styles.divider} />
+                                <button 
+                                  className={`${styles.actionBtn} ${styles.btnDelete}`}
+                                  onClick={(e) => handleDelete(e, req.id)}
+                                  title={isPt ? "Excluir" : "Delete"}
+                                >
+                                  <Trash2 size={18} strokeWidth={2.5} />
+                                </button>
+                              </>
+                            )}
                             <button 
                               className={`${styles.actionBtn} ${styles.btnView}`}
                               onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); }}

@@ -14,13 +14,14 @@
 .tableWrapper {
   width: 100%;
   overflow-x: auto;
-  padding-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1200px;
+  min-width: 900px;
 }
 
 .thead {
@@ -28,15 +29,19 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.th, .thSortable {
-  padding: 1rem 1.5rem;
+.th, .thSortable, .thActions {
+  padding: 0.8rem 1rem;
   text-align: left;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.4);
   letter-spacing: 0.05em;
   white-space: nowrap;
+}
+
+.thActions {
+  text-align: center;
 }
 
 .thSortable {
@@ -61,24 +66,23 @@
 }
 
 .tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: rgba(255, 255, 255, 0.04);
 }
 
-.td {
-  padding: 1rem 1.5rem;
+.td, .tdActions {
+  padding: 0.8rem 1rem;
   vertical-align: middle;
 }
 
-/* Tipografia */
 .primaryText {
   color: #FFFFFF;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
-  margin-bottom: 0.1rem;
+  margin-bottom: 0.2rem;
 }
 
 .secondaryText {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.5);
   font-size: 0.75rem;
 }
 
@@ -88,69 +92,128 @@
   white-space: nowrap;
 }
 
-/* Badges de Status (Mais discretas) */
 .statusBadge {
-  padding: 0.25rem 0.6rem;
+  padding: 0.3rem 0.6rem;
   border-radius: 4px;
   font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+  display: inline-block;
 }
 
 .statusPending { background: rgba(255, 193, 7, 0.1); color: #FFC107; border: 1px solid rgba(255, 193, 7, 0.2); }
 .statusApproved { background: rgba(46, 213, 115, 0.1); color: #2ED573; border: 1px solid rgba(46, 213, 115, 0.2); }
 .statusRejected { background: rgba(255, 71, 87, 0.1); color: #FF4757; border: 1px solid rgba(255, 71, 87, 0.2); }
 
-/* --- Ações Minimalistas --- */
-.thActions, .tdActions {
-  text-align: right;
-  padding-right: 1.5rem;
+.expiresContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.4rem;
+}
+
+.expiresText {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.expiresWarning {
+  color: #FFC107;
+}
+
+.expiresCritical {
+  color: #FF4757;
+  font-weight: 700;
 }
 
 .actionsGroup {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 0.25rem;
+  justify-content: center;
+  gap: 0.4rem;
 }
 
 .divider {
   width: 1px;
-  height: 16px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 0 0.25rem;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 0 0.2rem;
 }
 
 .actionBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.3); /* Apagado por padrão */
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
   transition: all 0.2s var(--ease-smooth);
 }
 
-/* Cores sutilmente aplicadas no hover */
-.btnApprove:hover { color: #2ED573; background: rgba(46, 213, 115, 0.1); }
-.btnReject:hover { color: #FFC107; background: rgba(255, 193, 7, 0.1); }
-.btnDelete:hover { color: #FF4757; background: rgba(255, 71, 87, 0.1); }
-.btnView:hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.1); }
+.btnApprove:hover { color: #2ED573; background: rgba(46, 213, 115, 0.1); border-color: rgba(46, 213, 115, 0.2); }
+.btnReject:hover { color: #FFC107; background: rgba(255, 193, 7, 0.1); border-color: rgba(255, 193, 7, 0.2); }
+.btnDelete:hover { color: #FF4757; background: rgba(255, 71, 87, 0.1); border-color: rgba(255, 71, 87, 0.2); }
+.btnView:hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
 
 .actionBtn:disabled {
-  opacity: 0.1;
+  opacity: 0.2;
   cursor: not-allowed;
+  background: transparent;
+  border-color: transparent;
 }
 
 .spinner {
   animation: spin 1s linear infinite;
-  color: var(--color-accent);
+  color: #FFFFFF;
 }
 
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+@media (min-width: 1024px) {
+  .tableWrapper {
+    overflow-x: hidden;
+  }
+  
+  .table {
+    min-width: 100%;
+    table-layout: auto;
+  }
+  
+  .th, .thSortable, .thActions, .td, .tdActions {
+    padding: 0.8rem 0.5rem;
+    text-align: center;
+  }
+  
+  .thContent {
+    justify-content: center;
+  }
+
+  .expiresContainer {
+    align-items: center;
+  }
+
+  .actionsGroup {
+    justify-content: center;
+    gap: 0.2rem;
+  }
+  
+  .primaryText {
+    font-size: 0.8rem;
+  }
+  
+  .secondaryText {
+    font-size: 0.7rem;
+  }
+
+  .actionBtn {
+    width: 30px;
+    height: 30px;
+  }
+}
